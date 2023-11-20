@@ -14,8 +14,13 @@ import image from "@/assets/2be267d0f703918f501da513143d26975beec465.jpg";
       <div style="margin-top: 10px">在这里你将可以与java之父王俊逸直接对话</div>
       <div style="margin-top: 5px">在这里你将可以同性交友，因为都是学java的男的，没有女生ovo</div>
     </div>
-    <div style="width: 500px;background-color: white">
-      <router-view/>
+    <div style="width: 500px;background-color: white;z-index: 1">
+      <router-view v-slot="{ Component}">
+        <transition name="el-fade-in-linear">
+          <Component :is="Component"/>
+        </transition>
+      </router-view>
+
    </div>
   </div>
 </template>

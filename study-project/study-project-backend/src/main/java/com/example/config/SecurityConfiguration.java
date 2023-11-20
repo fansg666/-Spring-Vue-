@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.example.eneity.Restbean;
 //import com.example.service.AuthorizeService;
 import com.example.service.AuthorizeService;
+import com.example.service.impl.AuthorizeServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,6 +25,7 @@ import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 
 @Configuration
@@ -31,10 +33,14 @@ import java.io.IOException;
 public class SecurityConfiguration {
     @Resource
     AuthorizeService authorizeService;
+    @Resource
+    DataSource dataSource;
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           PersistentTokenRepository repository) throws Exception{
         return http
                 .authorizeHttpRequests()
+                .antMatchers("/api/auth/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -46,6 +52,11 @@ public class SecurityConfiguration {
                 .logoutUrl("/api/auth/logout")
                 .logoutSuccessHandler(this::onAuthenticationSuccess)
                 .and()
+                .rememberMe()
+                .rememberMeParameter("remember")
+                .tokenRepository(repository)
+                .tokenValiditySeconds(3600 *24 * 3)
+                .and()
                 .csrf()
                 .disable()
                 .cors()
@@ -56,6 +67,13 @@ public class SecurityConfiguration {
                 .and()
                 .build();
 
+    }
+    @Bean
+    public PersistentTokenRepository tokenRepository(){
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        jdbcTokenRepository.setCreateTableOnStartup(false);
+        return  jdbcTokenRepository;
     }
     private CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration cors = new CorsConfiguration();
