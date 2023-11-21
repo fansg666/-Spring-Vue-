@@ -1,4 +1,4 @@
-package com.example.eneity;
+package com.example.eneity.auth;
 
 import lombok.Data;
 

@@ -16,8 +16,8 @@ import image from "@/assets/2be267d0f703918f501da513143d26975beec465.jpg";
     </div>
     <div style="width: 500px;background-color: white;z-index: 1">
       <router-view v-slot="{ Component}">
-        <transition name="el-fade-in-linear">
-          <Component :is="Component"/>
+        <transition name="el-fade-in-linear" mode="out-in">
+          <Component :is="Component" style="height: 100%"/>
         </transition>
       </router-view>
 
