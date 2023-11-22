@@ -102,7 +102,7 @@ const validateEmail = () => {
       <div style="font-size: 14px;color: grey">欢迎注册我们的学习平台，请在下方输入你的信息</div>
     </div>
     <div style="margin-top: 50px">
-      <el-form :model="form" :rules="rules" @validate="onValidate" ref="formRef">
+      <el-form @keyup.enter="register" :model="form" :rules="rules" @validate="onValidate" ref="formRef">
         <el-form-item prop="username">
           <el-input v-model="form.username" :maxlength="8" type="text" placeholder="用户名">
             <template #prefix>

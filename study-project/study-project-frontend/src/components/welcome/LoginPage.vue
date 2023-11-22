@@ -42,16 +42,18 @@ const login = () => {
     </div>
 
     <div style="margin-top: 50px">
-      <el-input v-model="form.username" type="text" placeholder="用户名/邮箱">
-        <template #prefix>
-          <el-icon><User /></el-icon>
-        </template>
-      </el-input>
-      <el-input v-model="form.password" type="password" style="margin-top: 10px" placeholder="密码">
-        <template #prefix>
-          <el-icon><Lock /></el-icon>
-        </template>
-      </el-input>
+      <el-form @keyup.enter="login">
+        <el-input v-model="form.username" type="text" placeholder="用户名/邮箱">
+          <template #prefix>
+            <el-icon><User /></el-icon>
+          </template>
+        </el-input>
+        <el-input v-model="form.password" type="password" style="margin-top: 10px" placeholder="密码">
+          <template #prefix>
+            <el-icon><Lock /></el-icon>
+          </template>
+        </el-input>
+      </el-form>
     </div>
     <el-row style="margin-top: 10px">
       <el-col :span="12" style="text-align: left">
